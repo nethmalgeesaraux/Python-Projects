@@ -21,7 +21,7 @@ SALT_SIZE = 16
 
 
 def derive_key(master_password: str, salt: bytes) -> bytes:
-    """Derive a 32-byte key from the master password and salt, return base64-urlsafe key for Fernet."""
+    
     password_bytes = master_password.encode("utf-8")
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -135,8 +135,8 @@ def delete_entry(path: str, master_password: str, label: str):
 
 
 def change_master(path: str, old_master: str, new_master: str):
-    vault = load_vault(path, old_master)  # will raise if old_master wrong
-    # create new salt for additional safety (so new master has new salt)
+    vault = load_vault(path, old_master) 
+   
     new_salt = secrets.token_bytes(SALT_SIZE)
     new_key = derive_key(new_master, new_salt)
     f = Fernet(new_key)
@@ -150,12 +150,12 @@ def change_master(path: str, old_master: str, new_master: str):
 
 
 def export_vault(path: str, master_password: str, out_path: str):
-    # Export the encrypted vault file as-is; it remains encrypted, safe to move.
+  
     if not os.path.exists(path):
         print("Vault not found:", path)
         return
-    # verify password
-    _ = load_vault(path, master_password)  # verify
+   
+    _ = load_vault(path, master_password)
     with open(path, "r", encoding="utf-8") as fin:
         data = fin.read()
     with open(out_path, "w", encoding="utf-8") as fout:
@@ -169,7 +169,7 @@ def import_vault(path: str, master_password: str, in_path: str):
         return
     with open(in_path, "r", encoding="utf-8") as f:
         payload = json.load(f)
-    # Verify that the provided master password can decrypt the imported file
+   
     salt = base64.b64decode(payload["salt"])
     token = base64.b64decode(payload["data"])
     key = derive_key(master_password, salt)
@@ -179,7 +179,7 @@ def import_vault(path: str, master_password: str, in_path: str):
     except Exception:
         print("Given master password cannot decrypt the imported vault (wrong password?).")
         return
-    # Save as current vault file (overwrite)
+   
     _write_vault_file(path, payload)
     print("Imported vault saved to", path)
 
@@ -232,7 +232,7 @@ def main():
             username = input("Username: ")
             pw = getpass.getpass("Password (leave empty to generate random): ")
             if not pw:
-                # generate a 16-character random password
+               
                 pw = base64.urlsafe_b64encode(os.urandom(12)).decode("utf-8").rstrip("=")
                 print("Generated password:", pw)
             notes = input("Notes (optional): ")
