@@ -96,6 +96,35 @@ def update_note():
     print(" Note not found.")
 
 
+def main_menu():
+    while True:
+        print("\n=== 🗒️ Notes Keeper ===")
+        print("1. Add Note")
+        print("2. View Notes")
+        print("3. Read Note")
+        print("4. Search Notes")
+        print("5. Update Note")
+        print("6. Delete Note")
+        print("7. Exit")
+        choice = input("Enter choice (1-7): ").strip()
+
+        if choice == "1":
+            add_note()
+        elif choice == "2":
+            view_notes()
+        elif choice == "3":
+            read_note()
+        elif choice == "4":
+            search_notes()
+        elif choice == "5":
+            update_note()
+        elif choice == "6":
+            delete_note()
+        elif choice == "7":
+            print("👋 Goodbye!")
+            break
+        else:
+            print("Invalid choice, try again!")
 
 
 if __name__ == "__main__":
